@@ -6,21 +6,19 @@ services:
             dockerfile: Dockerfile
             args:
                 XDE: 1
-        image: poc-app
-        container_name: poc-app
+        image: lara-app
+        container_name: lara-app
         restart: unless-stopped
         tty: true
         environment:
-            SERVICE_NAME: poc-app
+            SERVICE_NAME: lara-app
             SERVICE_TAGS: dev
         working_dir: /var/www/html
-        env_file:
-            - .env
         ports:
             - ${WEB_HOST_PORT:-8081}:8081
         volumes:
             - .:/var/www/html:cached
-            - poc-app-composer:/var/www/html/vendor
+            - lara-app-composer:/var/www/html/vendor
             - ./.docker/php/local.ini:/usr/local/etc/php/conf.d/local.ini
             - ./.docker/cron/local-cronjob:/etc/cron.d/cronjob
         networks:
@@ -33,17 +31,17 @@ services:
         image: postgres
         restart: unless-stopped
         tty: true
-        container_name: poc-db
+        container_name: lara-db
         ports:
             - ${DB_HOST_PORT:-5432}:5432
         environment:
-            POSTGRES_DB: ${DB_DATABASE:-bsm_poc}
-            POSTGRES_USER: ${DB_USERNAME:-bsm_root}
-            POSTGRES_PASSWORD: ${DB_PASSWORD:-bsm_pass}
-            SERVICE_NAME: poc-db
+            POSTGRES_DB: ${DB_DATABASE:-lara_db}
+            POSTGRES_USER: ${DB_USERNAME:-lara_user}
+            POSTGRES_PASSWORD: ${DB_PASSWORD:-lara_pass}
+            SERVICE_NAME: lara-db
             SERVICE_TAGS: dev
         volumes:
-            - poc-db:/var/lib/postgresql/data
+            - lara-db:/var/lib/postgresql/data
         networks:
             - app-network
 
@@ -52,7 +50,7 @@ networks:
         driver: bridge
 
 volumes:
-    poc-db:
+    lara-db:
         driver: local
-    poc-app-composer:
+    lara-app-composer:
         driver: local
