@@ -9,6 +9,7 @@ use Modules\Lender\Http\Requests\Lender\GetDetailLenderRequestCriteria;
 use Modules\Lender\Http\Requests\Lender\GetListLenderRequestCriteria;
 use Modules\Lender\Http\Requests\Lender\UpdateLenderRequest;
 use Modules\Lender\Http\Resources\LenderResource;
+use Modules\Lender\Models\Address;
 use Modules\Lender\Models\Lender;
 
 class LenderController extends Controller
@@ -22,21 +23,36 @@ class LenderController extends Controller
     public function show($uid, GetDetailLenderRequestCriteria $criteria)
     {
         $lender = $criteria->apply(Lender::query())->where('uid', $uid)->firstOrFail();
+        $lender->load(['address']);
         return new LenderResource($lender);
     }
 
     public function store(CreateLenderRequest $request)
     {
-        $lender = new Lender($request->all());
+        $lender = new Lender($data = $request->all());
         $lender->save();
+
+        $addressData = $data['address'] ?? null;
+        if ($addressData) {
+            $lender->address()->create($addressData);
+        }
         return new LenderResource($lender->refresh());
     }
 
     public function update($uid, UpdateLenderRequest $request)
     {
+        /** @var Lender $lender */
         $lender = Lender::query()->where('uid', $uid)->firstOrFail();
-        $lender->fill($request->all());
+        $lender->fill($data = $request->all());
         $lender->save();
+
+        $addressData = $data['address'] ?? null;
+        if ($addressData) {
+            $address = $lender->address ?? new Address();
+            $address->fill($addressData);
+            $lender->address()->save($address);
+        }
+
         return new LenderResource($lender->refresh());
     }
 

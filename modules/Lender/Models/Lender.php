@@ -5,6 +5,7 @@ namespace Modules\Lender\Models;
 
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Modules\Common\Eloquent\Model;
+use Modules\Lender\Models\Relations\LenderRelations;
 
 /**
  * @property int|null $id
@@ -19,6 +20,7 @@ use Modules\Common\Eloquent\Model;
 class Lender extends Model
 {
     use SoftDeletes;
+    use LenderRelations;
 
     /**
      * Define table name
