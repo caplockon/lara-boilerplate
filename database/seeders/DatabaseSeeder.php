@@ -10,7 +10,9 @@ class DatabaseSeeder extends Seeder
     /**
      * @var array
      */
-    protected array $partialSeeders = [];
+    protected array $partialSeeders = [
+        UserAdminSeeder::class,
+    ];
 
     /**
      * Seed the application's database.

@@ -14,6 +14,21 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+//Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+//    return $request->user();
+//});
+
+Route::group([
+    'prefix' => config('passport.path', 'oauth'),
+    'middleware' => 'auth:api',
+], function () {
+    Route::get('/me', function () {
+        return response([
+            'data' => auth()->user(),
+        ]);
+    });
+    Route::post('/token/destroy', function () {
+        auth()->user()?->token()?->revoke();
+        return response([]);
+    });
 });
