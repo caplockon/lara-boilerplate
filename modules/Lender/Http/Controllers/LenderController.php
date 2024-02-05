@@ -56,8 +56,8 @@ class LenderController extends Controller
         return new LenderResource($lender->refresh());
     }
 
-    public function destroy()
+    public function destroy($uid)
     {
-
+        Lender::query()->where('uid', $uid)->first()?->delete();
     }
 }
